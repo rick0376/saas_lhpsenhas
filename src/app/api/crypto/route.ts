@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Busca todas as senhas do banco
-    const allPasswords = await prisma.password.findMany();
+    const allPasswords = await prisma.generatedPassword.findMany();
 
     // Verifica qual senha corresponde
     const found = allPasswords.find((p) =>

@@ -3,31 +3,39 @@
 import { useState } from "react";
 import styles from "./styles.module.scss";
 
-export default function NumericDecryptForm() {
-  const [generatedPassword, setGeneratedPassword] = useState("");
-  const [originalName, setOriginalName] = useState("");
+interface NumericDecryptFormProps {
+  onGenerated: () => void;
+  userId: string;
+}
+
+export default function NumericDecryptForm({
+  onGenerated,
+  userId,
+}: NumericDecryptFormProps) {
+  const [encryptedPassword, setEncryptedPassword] = useState("");
+  const [decryptedPassword, setDecryptedPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleReverse = async (e: React.FormEvent) => {
+  const handleDecrypt = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setOriginalName("");
 
     try {
-      const response = await fetch("/api/crypto/numeric", {
+      const response = await fetch("/api/numeric/decrypt", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ generatedPassword }),
+        body: JSON.stringify({ generatedPassword: encryptedPassword, userId }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setOriginalName(data.originalName);
+        setDecryptedPassword(data.originalName || data.decryptedPassword);
+        onGenerated();
       } else {
-        alert(data.error || "Senha numérica não encontrada");
+        alert(data.error || "Erro ao descriptografar");
       }
-    } catch (error) {
+    } catch {
       alert("Erro na requisição");
     } finally {
       setLoading(false);
@@ -36,25 +44,25 @@ export default function NumericDecryptForm() {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Descobrir Nome pelo Número</h2>
-      <form onSubmit={handleReverse} className={styles.form}>
+      <h2 className={styles.title}>Descriptografar Senha Numérica</h2>
+      <form onSubmit={handleDecrypt} className={styles.form}>
         <input
           type="text"
-          value={generatedPassword}
-          onChange={(e) => setGeneratedPassword(e.target.value)}
-          placeholder="Cole a senha numérica gerada"
+          value={encryptedPassword}
+          onChange={(e) => setEncryptedPassword(e.target.value)}
+          placeholder="Insira a senha numérica criptografada"
           className={styles.input}
           required
         />
         <button type="submit" className={styles.button} disabled={loading}>
-          {loading ? "Buscando..." : "Descobrir Nome"}
+          {loading ? "Descriptografando..." : "Descriptografar"}
         </button>
       </form>
 
-      {originalName && (
+      {decryptedPassword && (
         <div className={styles.result}>
-          <h3>Nome Original:</h3>
-          <p className={styles.decrypted}>{originalName}</p>
+          <h3>Senha Descriptografada:</h3>
+          <p className={styles.decrypted}>{decryptedPassword}</p>
         </div>
       )}
     </div>

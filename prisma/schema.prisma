@@ -7,13 +7,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Password {
-  id              Int      @id @default(autoincrement())
-  originalName    String
-  generatedPassword String
-  passwordLength  Int
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+}
 
-  @@map("passwords")
+model User {
+  id        Int                  @id @default(autoincrement())
+  name      String?
+  email     String               @unique
+  password  String
+  role      Role                 @default(USER)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  generatedPasswords GeneratedPassword[]
+}
+
+model GeneratedPassword {
+  id                Int      @id @default(autoincrement())
+  originalName      String
+  generatedPassword String
+  passwordLength    Int
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  userId Int
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

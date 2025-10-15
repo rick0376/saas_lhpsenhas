@@ -1,10 +1,7 @@
-import type { Metadata } from "next";
 import "../styles/globals.scss";
-
-export const metadata: Metadata = {
-  title: "Gerenciador de Senhas",
-  description: "Sistema de criptografia e descriptografia de senhas",
-};
+import { Providers } from "./providers";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 export default function RootLayout({
   children,
@@ -13,7 +10,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Providers>
+          <Header />
+          <div style={{ flex: 1 }}>{children}</div>
+          <Footer />
+        </Providers>
+      </body>
     </html>
   );
 }

@@ -1,0 +1,269 @@
+/* =========================
+   Estilo geral do Header
+   ======================== */
+.header {
+  position: sticky;
+  border-radius: 8px;
+  top: 0;
+  z-index: 1000;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.98) 0%,
+    rgba(30, 41, 59, 0.98) 50%,
+    rgba(51, 65, 85, 0.98) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-bottom: none;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(34, 197, 94, 0.3);
+  animation: slideDown 0.8s ease-out;
+  position: relative;
+  padding: 0 2rem;
+  height: 85px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Nav flex container */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  //position: relative;
+}
+
+/* Nome do usuário ao lado do botão burger */
+.userName {
+  margin-left: auto;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  font-family: "Inter", sans-serif;
+  user-select: none;
+}
+
+/* Botão hamburguer sempre no canto direito */
+.burger {
+  margin-left: auto; /* Empurra o botão para a extrema direita */
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 2px solid rgba(148, 163, 184, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.8) 0%,
+    rgba(51, 65, 85, 0.7) 50%,
+    rgba(71, 85, 105, 0.6) 100%
+  );
+  backdrop-filter: blur(15px);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  order: 999;
+}
+
+/* hover animacoes do botão burger */
+.burger::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #3b82f6, #22c55e, #f97316);
+  background-size: 300% 100%;
+  animation: conveyor 3s linear infinite;
+}
+
+.burger:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(51, 65, 85, 0.9) 0%,
+    rgba(71, 85, 105, 0.8) 50%,
+    rgba(100, 116, 139, 0.7) 100%
+  );
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border-color: rgba(148, 163, 184, 0.5);
+}
+
+.burger svg {
+  transition: all 0.3s ease;
+}
+
+.burger:hover svg {
+  transform: scale(1.1);
+}
+
+/* MENU suspenso dropdown */
+.menu {
+  list-style: none;
+  display: none; /* oculto padrão */
+  position: fixed;
+  top: 90px;
+  right: 10px;
+  width: 350px;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 41, 59, 0.98) 0%,
+    rgba(51, 65, 85, 0.95) 50%,
+    rgba(71, 85, 105, 0.92) 100%
+  );
+  backdrop-filter: blur(25px);
+  border: 2px solid rgba(34, 197, 94, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  z-index: 1100;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-25px) scale(0.95);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* scroll style */
+.menu::-webkit-scrollbar {
+  width: 6px;
+}
+.menu::-webkit-scrollbar-track {
+  background: rgba(34, 197, 94, 0.1);
+  border-radius: 3px;
+}
+.menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border-radius: 3px;
+}
+.menu::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+/* Menu aberto */
+.open {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+  animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Itens do menu */
+.menu li {
+  margin-bottom: 1rem;
+}
+
+/* Link e botão itens */
+.item {
+  display: flex;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  font-feature-settings: "liga" 0;
+  text-decoration: none;
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  width: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.item:hover,
+.item:focus {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.1) 0%,
+    rgba(59, 130, 246, 0.05) 100%
+  );
+  transform: translateX(6px);
+  color: #22c55e;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 4px 20px rgba(34, 197, 94, 0.2);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.item:focus {
+  outline: none;
+}
+
+/* Botão logout estilo especial */
+.logoutItem {
+  color: #fca5a5;
+  font-weight: 800;
+  border: 2px solid transparent;
+}
+
+.logoutItem:hover,
+.logoutItem:focus {
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.1) 0%,
+    rgba(220, 38, 38, 0.05) 100%
+  );
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  color: #ef4444;
+  cursor: pointer;
+}
+
+.logoutItem:focus {
+  outline: none;
+}
+
+/* Título do grupo menu */
+.menuGroupLabel {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 8px 12px 4px 12px;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  user-select: none;
+  cursor: default;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.disabled {
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Animações usadas */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes conveyor {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 40px 0;
+  }
+}

@@ -1,0 +1,39 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(40, 60, 120, 0.09);
+  max-width: 350px;
+  margin: 0 auto 30px auto;
+}
+.form input {
+  font-size: 16px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #dedede;
+  background: #fafbfc;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form input:focus {
+  border-color: #4a90e2;
+}
+.form button {
+  padding: 10px 0;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.form button:hover {
+  background: #357abd;
+}
+.form p {
+  color: #2ecc71;
+}

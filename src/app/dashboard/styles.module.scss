@@ -1,0 +1,31 @@
+.container {
+  max-width: 960px;
+  margin: 48px auto;
+  padding: 32px 28px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 36px;
+  color: #2f54eb;
+  text-align: center;
+}
+
+.section {
+  margin-bottom: 48px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 28px;
+}
+
+.subtitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #4157d0;
+}

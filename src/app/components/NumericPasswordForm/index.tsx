@@ -3,29 +3,30 @@
 import { useState } from "react";
 import styles from "./styles.module.scss";
 
+interface NumericPasswordFormProps {
+  onGenerated: () => void;
+  userId: string;
+}
+
 export default function NumericPasswordForm({
   onGenerated,
-}: {
-  onGenerated: () => void;
-}) {
+  userId,
+}: NumericPasswordFormProps) {
   const [originalName, setOriginalName] = useState("");
-  const [passwordLength, setPasswordLength] = useState(12);
+  const [passwordLength, setPasswordLength] = useState(6);
   const [generatedPassword, setGeneratedPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleGenerate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
     try {
-      const response = await fetch("/api/passwords/numeric", {
+      const response = await fetch("/api/numeric", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ originalName, passwordLength }),
+        body: JSON.stringify({ originalName, passwordLength, userId }),
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setGeneratedPassword(data.generatedPassword);
         setOriginalName("");
@@ -52,7 +53,6 @@ export default function NumericPasswordForm({
           className={styles.input}
           required
         />
-
         <div className={styles.lengthControl}>
           <label htmlFor="length">
             Tamanho da senha: {passwordLength} caracteres
@@ -60,19 +60,17 @@ export default function NumericPasswordForm({
           <input
             id="length"
             type="range"
-            min="4"
-            max="16"
+            min={4}
+            max={12}
             value={passwordLength}
-            onChange={(e) => setPasswordLength(parseInt(e.target.value))}
+            onChange={(e) => setPasswordLength(Number(e.target.value))}
             className={styles.slider}
           />
         </div>
-
         <button type="submit" className={styles.button} disabled={loading}>
           {loading ? "Gerando..." : "Gerar Senha Numérica"}
         </button>
       </form>
-
       {generatedPassword && (
         <div className={styles.result}>
           <h3>Senha Numérica Gerada:</h3>

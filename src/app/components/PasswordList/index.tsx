@@ -1,157 +1,166 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { FiClipboard, FiTrash2 } from "react-icons/fi";
+import toast, { Toaster } from "react-hot-toast";
 import styles from "./styles.module.scss";
 
 interface Password {
   id: number;
   originalName: string;
   generatedPassword: string;
-  passwordLength: number;
   createdAt: string;
 }
 
-export default function PasswordList({ refresh }: { refresh: number }) {
+interface PasswordListProps {
+  refresh: number;
+  userId: string;
+}
+
+export default function PasswordList({ refresh, userId }: PasswordListProps) {
   const [passwords, setPasswords] = useState<Password[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const [toastVisible, setToastVisible] = useState(false);
+  const [passwordToDelete, setPasswordToDelete] = useState<Password | null>(
+    null
+  );
 
   useEffect(() => {
-    fetchPasswords();
-  }, [refresh]);
-
-  const fetchPasswords = async () => {
-    try {
-      const response = await fetch("/api/passwords");
-      const data = await response.json();
-      setPasswords(data);
-    } catch (error) {
-      console.error("Erro ao buscar senhas:", error);
-    } finally {
-      setLoading(false);
+    async function fetchPasswords() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/passwords?userId=${userId}`);
+        const data = await res.json();
+        setPasswords(data);
+      } catch {
+        setPasswords([]);
+      } finally {
+        setLoading(false);
+      }
     }
+    if (userId) {
+      fetchPasswords();
+    }
+  }, [refresh, userId]);
+
+  const copyPassword = (password: string) => {
+    navigator.clipboard
+      .writeText(password)
+      .then(() => toast.success("Senha copiada para a área de transferência!"))
+      .catch(() => toast.error("Erro ao copiar senha"));
   };
 
-  const openDeleteModal = (id: number) => {
-    setSelectedId(id);
+  // Função chamando modal
+  const openDeleteModal = (password: Password) => {
+    setPasswordToDelete(password);
     setModalOpen(true);
   };
 
-  const closeModal = () => {
-    setSelectedId(null);
-    setModalOpen(false);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (selectedId === null) return;
-
+  // Confirmar exclusão vindo da modal
+  const confirmDeletePassword = async () => {
+    if (!passwordToDelete) return;
+    setDeletingId(passwordToDelete.id);
     try {
-      const response = await fetch(`/api/passwords?id=${selectedId}`, {
+      const res = await fetch(`/api/passwords/${passwordToDelete.id}`, {
         method: "DELETE",
       });
-
-      if (response.ok) {
-        setPasswords(passwords.filter((p) => p.id !== selectedId));
-        closeModal();
+      if (res.ok) {
+        setPasswords((prev) =>
+          prev.filter((p) => p.id !== passwordToDelete.id)
+        );
+        toast.success("Senha deletada com sucesso!");
       } else {
-        alert("Erro ao deletar");
+        toast.error("Erro ao deletar senha");
       }
-    } catch (error) {
-      alert("Erro na requisição");
+    } catch {
+      toast.error("Erro na requisição");
+    } finally {
+      setDeletingId(null);
+      setModalOpen(false);
+      setPasswordToDelete(null);
     }
   };
 
-  // Mostra o toast por 2.5 segundos
-  const showToast = () => {
-    setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 2500);
+  // Cancelar exclusão
+  const cancelDelete = () => {
+    setModalOpen(false);
+    setPasswordToDelete(null);
   };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    showToast();
-  };
-
-  if (loading) {
-    return <div className={styles.loading}>Carregando...</div>;
-  }
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Senhas Geradas ({passwords.length})</h2>
-
-      {passwords.length === 0 ? (
-        <p className={styles.empty}>Nenhuma senha gerada ainda.</p>
-      ) : (
-        <div className={styles.list}>
-          {passwords.map((password) => (
-            <div key={password.id} className={styles.card}>
-              <div className={styles.content}>
-                <div className={styles.field}>
-                  <span className={styles.label}>Nome Original:</span>
-                  <span className={styles.value}>{password.originalName}</span>
-                </div>
-                <div className={styles.field}>
-                  <span className={styles.label}>
-                    Senha Gerada ({password.passwordLength} caracteres):
-                  </span>
-                  <span className={styles.encrypted}>
-                    {password.generatedPassword}
-                  </span>
-                </div>
-                <div className={styles.field}>
-                  <span className={styles.label}>Data:</span>
-                  <span className={styles.date}>
-                    {new Date(password.createdAt).toLocaleString("pt-BR")}
-                  </span>
-                </div>
+      <Toaster position="bottom-right" reverseOrder={false} />
+      <h2 className={styles.title}>Senhas Geradas</h2>
+      {loading && <p className={styles.loading}>Carregando senhas...</p>}
+      {!loading && passwords.length === 0 && (
+        <p className={styles.empty}>Nenhuma senha cadastrada.</p>
+      )}
+      <ul className={styles.list}>
+        {passwords.map((p) => (
+          <li key={p.id} className={styles.card}>
+            <div className={styles.content}>
+              <div className={styles.field}>
+                <span className={styles.label}>Nome Original:</span>
+                <span className={styles.value}>{p.originalName}</span>
               </div>
-              <div className={styles.actions}>
-                <button
-                  onClick={() => copyToClipboard(password.generatedPassword)}
-                  className={styles.copyButton}
-                >
-                  Copiar Senha
-                </button>
-                <button
-                  onClick={() => openDeleteModal(password.id)}
-                  className={styles.deleteButton}
-                >
-                  Deletar
-                </button>
+              <div className={styles.field}>
+                <span className={styles.label}>Senha Gerada:</span>
+                <span className={`${styles.value} ${styles.encrypted}`}>
+                  {p.generatedPassword}
+                </span>
+              </div>
+              <div className={styles.date}>
+                {new Date(p.createdAt).toLocaleString()}
               </div>
             </div>
-          ))}
-        </div>
-      )}
+            <div className={styles.actions}>
+              <button
+                className={styles.copyButton}
+                onClick={() => copyPassword(p.generatedPassword)}
+                title="Copiar senha"
+                aria-label="Copiar senha"
+              >
+                <FiClipboard size={18} />
+              </button>
+              <button
+                className={styles.deleteButton}
+                onClick={() => openDeleteModal(p)}
+                disabled={deletingId === p.id}
+                title="Excluir senha"
+                aria-label="Excluir senha"
+              >
+                <FiTrash2 size={18} />
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
 
-      {modalOpen && (
+      {/* Modal de confirmação */}
+      {modalOpen && passwordToDelete && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h3>Confirmar exclusão</h3>
-            <p>Tem certeza que deseja deletar esta senha?</p>
+            <h3>Confirma exclusão?</h3>
+            <p>
+              Você realmente deseja deletar a senha para{" "}
+              <strong>{passwordToDelete.originalName}</strong>?
+            </p>
             <div className={styles.modalButtons}>
-              <button onClick={closeModal} className={styles.buttonCancel}>
+              <button className={styles.buttonCancel} onClick={cancelDelete}>
                 Cancelar
               </button>
               <button
-                onClick={handleDeleteConfirm}
                 className={styles.buttonConfirm}
+                onClick={confirmDeletePassword}
+                disabled={deletingId === passwordToDelete.id}
               >
-                Deletar
+                {deletingId === passwordToDelete.id
+                  ? "Excluindo..."
+                  : "Sim, deletar"}
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {toastVisible && (
-        <div className={styles.toast}>
-          Senha copiada para a área de transferência!
         </div>
       )}
     </div>
