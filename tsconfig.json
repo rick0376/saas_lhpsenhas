@@ -25,6 +25,12 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "types": ["next-auth"] // opcional, para incluir tipos do NextAuth
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/lib/111111auth"
+  ],
   "exclude": ["node_modules"]
 }

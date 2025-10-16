@@ -2,19 +2,21 @@ import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
+import { NextApiRequest, NextApiResponse } from "next"; // Usando NextApiRequest e NextApiResponse para garantir compatibilidade
 
+// Definindo as opções do NextAuth
 export const authOptions: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma), // Conexão com o Prisma Adapter
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "Credentials", // Nome do provedor de autenticação
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Senha", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null;
+        if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
@@ -27,6 +29,7 @@ export const authOptions: AuthOptions = {
         );
         if (!isValid) return null;
 
+        // Retorna os dados do usuário ao ser validado
         return {
           id: user.id.toString(),
           name: user.name,
@@ -37,6 +40,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
+    // Callback para o JWT, adicionando os dados do usuário no token
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -44,6 +48,7 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
+    // Callback para a sessão, atualizando os dados da sessão com o token
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -57,12 +62,16 @@ export const authOptions: AuthOptions = {
     },
   },
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Usando o JWT para a estratégia de sessão
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET, // Definindo a chave secreta do NextAuth
 };
 
-const handler = NextAuth(authOptions);
+// Função assíncrona para o handler da API com o tipo correto para Next.js 13+
+export async function handler(req: NextApiRequest, res: NextApiResponse) {
+  return NextAuth(req, res, authOptions); // Usando NextApiRequest e NextApiResponse diretamente
+}
 
+// Exportando os métodos GET e POST corretamente para o Next.js 13+
 export const GET = handler;
 export const POST = handler;
