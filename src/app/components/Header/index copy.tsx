@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import styles from "./styles.module.scss";
 
 export default function Header() {
@@ -43,8 +43,7 @@ export default function Header() {
   function renderLink(
     href: string,
     label: string,
-    disabled: boolean,
-    icon?: React.ReactNode
+    disabled: boolean
   ): JSX.Element {
     if (disabled) {
       return (
@@ -53,14 +52,12 @@ export default function Header() {
           aria-disabled="true"
           tabIndex={-1}
         >
-          {icon && icon}
           {label}
         </span>
       );
     }
     return (
       <Link href={href} className={styles.item}>
-        {icon && icon}
         {label}
       </Link>
     );
@@ -105,14 +102,6 @@ export default function Header() {
           role="menu"
         >
           <li>{renderLink("/", "Início", false)}</li>
-          <li>
-            {renderLink(
-              "/dashboard",
-              "Dashboard",
-              !isLoggedIn,
-              <LayoutDashboard size={16} style={{ marginRight: "0.5rem" }} />
-            )}
-          </li>
 
           <li className={styles.menuGroupLabel}>Cadastros</li>
 
