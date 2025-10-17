@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <main className={styles.container}>
-      <h1 className={styles.title}>LHPSYSTEMS - Gera Senhas</h1>
+      <h1 className={styles.title}>Sistemas - Gerar Senhas</h1>
       {error && <p className={styles.error}>{error}</p>}
       <div className={styles.cards}>
         {usuarios.map((user) => (

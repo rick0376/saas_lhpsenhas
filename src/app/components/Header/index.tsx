@@ -69,7 +69,7 @@ export default function Header() {
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>
-        {/* Logo */}
+        {/* Logo e Nome da Empresa */}
         <Link href="/" className={styles.logoLink}>
           <Image
             src="/logo.png"
@@ -79,6 +79,7 @@ export default function Header() {
             className={styles.logo}
             priority
           />
+          <span className={styles.companyName}>LHPSYSTEMS</span>
         </Link>
 
         <div className={styles.navRight}>
@@ -104,7 +105,7 @@ export default function Header() {
           onClick={() => setMenuOpen(false)}
           role="menu"
         >
-          <li>{renderLink("/", "Início", false)}</li>
+          {/*<li>{renderLink("/", "Início", false)}</li>*/}
           <li>
             {renderLink(
               "/dashboard",

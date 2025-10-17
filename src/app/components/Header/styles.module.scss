@@ -8,9 +8,9 @@
   z-index: 1000;
   background: linear-gradient(
     135deg,
-    rgba(15, 23, 42, 0.98) 0%,
-    rgba(30, 41, 59, 0.98) 50%,
-    rgba(51, 65, 85, 0.98) 100%
+    rgba(28, 39, 65, 0.98) 0%,
+    rgba(49, 68, 99, 0.98) 50%,
+    rgba(52, 66, 87, 0.98) 100%
   );
   backdrop-filter: blur(20px);
   border-bottom: none;
@@ -43,6 +43,7 @@
   transition: all 0.3s ease;
   border-radius: 8px;
   padding: 0.25rem;
+  gap: 0.75rem; // Espaço entre logo e nome
 
   &:hover {
     transform: scale(1.05);
@@ -72,6 +73,26 @@
   }
 }
 
+.companyName {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #ff8c00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: "Inter", sans-serif;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 1.3rem;
+  }
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
 /* Container direito (userName + burger) */
 .navRight {
   display: flex;
@@ -87,7 +108,7 @@
   white-space: nowrap;
   font-family: "Inter", sans-serif;
   user-select: none;
-  font-size: 0.95rem;
+  font-size: 1.2rem;
 
   @media (max-width: 768px) {
     display: none;
