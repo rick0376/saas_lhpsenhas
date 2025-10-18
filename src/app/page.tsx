@@ -18,7 +18,12 @@ export default function Home() {
   useEffect(() => {
     async function fetchUsuarios() {
       try {
-        const response = await fetch("/api/usuarios/all");
+        const response = await fetch("/api/usuarios/all", {
+          cache: "no-store", // Adicione isso!
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        });
         if (!response.ok) {
           throw new Error("Erro ao buscar usuários");
         }
