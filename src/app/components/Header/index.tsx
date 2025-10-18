@@ -104,7 +104,7 @@ export default function Header() {
             disabled={!isLoggedIn}
             aria-disabled={!isLoggedIn}
           >
-            <LogOut size={16} style={{ marginRight: "0.5rem" }} />
+            <LogOut className={styles.logoutIcon} />
           </button>
 
           <button
