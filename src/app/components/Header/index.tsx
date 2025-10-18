@@ -70,7 +70,7 @@ export default function Header() {
     <header className={styles.header}>
       <nav className={styles.nav}>
         {/* Logo e Nome da Empresa */}
-        <Link href="/" className={styles.logoLink}>
+        <Link href="/dashboard" className={styles.logoLink}>
           <Image
             src="/logo.png"
             alt="Logo da Empresa"
@@ -84,8 +84,19 @@ export default function Header() {
 
         <div className={styles.navRight}>
           {session?.user?.name && (
-            <span className={styles.userName}>Olá, {session.user.name}</span>
+            <span className={styles.userName}>{session.user.name}</span>
           )}
+
+          <button
+            className={`${styles.actionBtn} ${styles.logoutBtn}`}
+            onClick={() => signOut({ callbackUrl: "/" })}
+            title="Sair"
+            type="button"
+            disabled={!isLoggedIn}
+            aria-disabled={!isLoggedIn}
+          >
+            <LogOut size={16} style={{ marginRight: "0.5rem" }} />
+          </button>
 
           <button
             ref={burgerRef}
@@ -125,11 +136,9 @@ export default function Header() {
 
           <li>
             <button
-              className={`${styles.logoutItem} ${styles.item}`}
+              className={`${styles.actionBtn} ${styles.logoutBtn} `}
               onClick={() => signOut({ callbackUrl: "/" })}
-              type="button"
-              disabled={!isLoggedIn}
-              aria-disabled={!isLoggedIn}
+              title="Sair"
             >
               <LogOut size={16} style={{ marginRight: "0.5rem" }} />
               Deslogar
