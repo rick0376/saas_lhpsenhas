@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
 import styles from "./styles.module.scss";
 
 export default function Header() {
@@ -83,8 +83,17 @@ export default function Header() {
         </Link>
 
         <div className={styles.navRight}>
-          {session?.user?.name && (
-            <span className={styles.userName}>{session.user.name}</span>
+          {session?.user?.name ? (
+            <span className={styles.userName}>
+              <User
+                size={24}
+                color=" #FFD700 "
+                style={{ marginRight: "0.5rem" }}
+              />
+              {session.user.name}
+            </span>
+          ) : (
+            <span className={styles.userName}>Sistema de Senhas</span>
           )}
 
           <button
